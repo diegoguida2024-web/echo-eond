@@ -48,6 +48,20 @@ const CONFIG = {
   dbFile: process.env.DB_FILE || 'echo_dispatcher.db',
 };
 
+// Validate required env vars
+function validateConfig() {
+  const required = ['DISCORD_TOKEN', 'DISCORD_CLIENT_ID', 'DISCORD_GUILD_ID'];
+  const missing = required.filter(key => !process.env[key]);
+  
+  if (missing.length > 0) {
+    console.error('\n❌ MISSING ENVIRONMENT VARIABLES:');
+    missing.forEach(key => console.error(`   - ${key}`));
+    console.error('\n⚠️  SET THESE IN RAILWAY DASHBOARD:');
+    console.error('   Project Settings → Variables\n');
+    process.exit(1);
+  }
+}
+
 // ─────────────────────────────────────────────────────
 //  DATABASE WRAPPER for sql.js
 // ─────────────────────────────────────────────────────
@@ -206,6 +220,9 @@ const rest = new REST({ version: '10' }).setToken(CONFIG.token);
 // ─────────────────────────────────────────────────────
 async function main() {
   try {
+    // Validate configuration
+    validateConfig();
+
     // Initialize SQL.js
     SQL = await initSqlJs();
     db = new SqlDatabase(SQL, CONFIG.dbFile);
