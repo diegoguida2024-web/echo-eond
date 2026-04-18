@@ -1,5 +1,5 @@
 {
-  "name": "echo-bot",
+  "name": "echo-bot-final",
   "version": "1.0.0",
   "description": "",
   "main": "bot.js",
@@ -9,11 +9,10 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "discord.js": "^14.26.3",
-    "dotenv": "^17.4.2",
-    "node-cron": "^4.2.1",
-    "sql.js": "^1.14.1"
+    "better-sqlite3": "^9.2.2",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "node-cron": "^3.0.3"
   }
 }
