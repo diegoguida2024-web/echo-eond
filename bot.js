@@ -379,7 +379,7 @@ const client = new Client({
   partials: [Partials.Message, Partials.Channel, Partials.Reaction]
 });
 
-client.once('ready', async () => {
+client.once('clientReady', async () => {
   console.log(`[E.C.H.O.] Online: ${client.user.tag}`);
   console.log(`[E.C.H.O.] DB path: ${DB_PATH}`);
   client.user.setActivity('⚙️ E.O.N.D. Core | /task', { type: 4 });
