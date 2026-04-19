@@ -1,18 +1,20 @@
 {
-  "name": "echo-bot-final",
-  "version": "1.0.0",
-  "description": "",
+  "name": "echo-smart-dispatcher",
+  "version": "3.0.0",
+  "description": "E.C.H.O. Smart Dispatcher — Discord + Telegram | E.O.N.D. Core",
   "main": "bot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node bot.js",
+    "dev": "node --watch bot.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "better-sqlite3": "^9.2.2",
     "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "node-telegram-bot-api": "^0.66.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
