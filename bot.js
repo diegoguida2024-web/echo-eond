@@ -559,46 +559,38 @@ function initTelegram(guild) {
     return;
   }
 
-  // Crea il bot SENZA polling inizialmente
-  tgBot = new TelegramBot(TG_TOKEN, { polling: false });
+ // Crea il bot SENZA polling inizialmente
+tgBot = new TelegramBot(TG_TOKEN, { polling: false });
 
-  // FIX CRITICO: elimina qualsiasi webhook esistente prima di avviare polling
-  // Se c'è un webhook attivo, polling silenziosamente non riceve nulla
-  tgBot.deleteWebhook({ drop_pending_updates: true })
-    .then(() => {
-      console.log('[E.C.H.O./TG] Webhook eliminato. Avvio polling...');
-      // Ora avvia polling con configurazione esplicita
-      return tgBot.startPolling({
-        interval: 300,
-        autoStart: true,
-        params: {
-          timeout: 10,
-          allowed_updates: ['message', 'callback_query']
-        }
-      });
-    })
-    .then(() => {
-      console.log('[E.C.H.O./TG] Bot Telegram online e in ascolto.');
-      _registerTelegramHandlers(guild);
-    })
-    .catch(err => {
-      console.error('[E.C.H.O./TG] Errore inizializzazione:', err.message);
-      // Prova comunque ad avviare polling
-      tgBot.startPolling().catch(() => {});
-      _registerTelegramHandlers(guild);
-    });
+async function initTelegram(guild) {
+  try {
+    // FIX CRITICO: elimina qualsiasi webhook esistente prima di avviare polling
+    await tgBot.deleteWebHook({ drop_pending_updates: true });
 
-  tgBot.on('polling_error', err => {
-    // 409 = Conflict: c'è un'altra istanza — non crashare, solo logga
-    if (err.code === 'ETELEGRAM' && err.message?.includes('409')) {
+    console.log('[E.C.H.O./TG] Webhook eliminato. Avvio polling...');
+
+    await tgBot.startPolling({ restart: true });
+
+    console.log('[E.C.H.O./TG] Bot Telegram online e in ascolto.');
+    _registerTelegramHandlers(guild);
+  } catch (err) {
+    if (err?.response?.statusCode === 409 || err?.message?.includes('409')) {
       console.warn('[E.C.H.O./TG] Conflict 409 — altra istanza attiva. In attesa...');
     } else {
-      console.error('[E.C.H.O./TG] Polling error:', err.code || err.message);
+      console.error('[E.C.H.O./TG] Errore inizializzazione:', err?.message || err);
+    }
+  }
+
+  tgBot.on('polling_error', err => {
+    if (err?.code === 'ETELEGRAM' && err?.message?.includes('409')) {
+      console.warn('[E.C.H.O./TG] Conflict 409 — altra istanza attiva. In attesa...');
+    } else {
+      console.error('[E.C.H.O./TG] Polling error:', err?.code || err?.message || err);
     }
   });
 
   tgBot.on('error', err => {
-    console.error('[E.C.H.O./TG] Error:', err.message);
+    console.error('[E.C.H.O./TG] Error:', err?.message || err);
   });
 }
 
